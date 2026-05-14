@@ -1,39 +1,82 @@
 #include <stdio.h>
 
 
-void bubbleSortArray(int A[], int N)
+void merge(int A[], int left, int mid, int right)
 {
-    int i, j, temp;
+    int i, j, k;
 
-    for(i = 0; i < N - 1; i++)
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    int L[n1], R[n2];
+
+    for(i = 0; i < n1; i++)
+        L[i] = A[left + i];
+
+    for(j = 0; j < n2; j++)
+        R[j] = A[mid + 1 + j];
+
+    i = 0;
+    j = 0;
+    k = left;
+
+    while(i < n1 && j < n2)
     {
-        for(j = 0; j < N - i - 1; j++)
+        if(L[i] <= R[j])
         {
-            if(A[j] > A[j + 1])
-            {
-                temp = A[j];
-                A[j] = A[j + 1];
-                A[j + 1] = temp;
-            }
+            A[k] = L[i];
+            i++;
         }
+        else
+        {
+            A[k] = R[j];
+            j++;
+        }
+
+        k++;
+    }
+
+    while(i < n1)
+    {
+        A[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while(j < n2)
+    {
+        A[k] = R[j];
+        j++;
+        k++;
     }
 }
 
-/* Recursive Function */
+
+void mergeSort(int A[], int left, int right)
+{
+    if(left < right)
+    {
+        int mid = (left + right) / 2;
+
+        mergeSort(A, left, mid);
+        mergeSort(A, mid + 1, right);
+
+        merge(A, left, mid, right);
+    }
+}
+
+/* Triangle Check */
 int checkTriangle(int A[], int N, int i)
 {
-
     if(i >= N - 2)
     {
         return 0;
     }
 
-    /* Triangle condition */
     if(A[i] + A[i + 1] > A[i + 2])
     {
         return 1;
     }
-
 
     return checkTriangle(A, N, i + 1);
 }
@@ -41,24 +84,22 @@ int checkTriangle(int A[], int N, int i)
 
 int triangleRecursive(int A[], int N)
 {
-
-    bubbleSortArray(A, N);
-
+    mergeSort(A, 0, N - 1);
 
     return checkTriangle(A, N, 0);
 }
 
-int main_0()
+int main()
 {
     int N;
     int i;
 
-    printf("Recursive Algorithm to Check is there a Triangle \n");
-    printf("\nEnter number of Inputs : ");
+    printf("Recursive Triangle Algorithm\n");
+
+    printf("\nEnter number of inputs: ");
     scanf("%d", &N);
 
     int A[N];
-
 
     for(i = 0; i < N; i++)
     {
@@ -66,17 +107,15 @@ int main_0()
         scanf("%d", &A[i]);
     }
 
-    int result;
-
-    result = triangleRecursive(A, N);
+    int result = triangleRecursive(A, N);
 
     if(result == 1)
     {
-        printf("\n (1)  Triangle exists\n");
+        printf("\n(1) Triangle exists\n");
     }
     else
     {
-        printf("\n  (0)  Triangle does not exist\n");
+        printf("\n(0) Triangle does not exist\n");
     }
 
     return 0;
